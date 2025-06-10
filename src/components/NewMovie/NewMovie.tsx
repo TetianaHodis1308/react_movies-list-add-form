@@ -6,24 +6,49 @@ type PropsNewMovie = {
   onAdd: (movie: Movie) => void;
 };
 
+export enum Naming {
+  title = 'title',
+  description = 'description',
+  imgUrl = 'imgUrl',
+  imdbUrl = 'imdbUrl',
+  imdbId = 'imdbId',
+}
+
 export const NewMovie: React.FC<PropsNewMovie> = ({ onAdd }) => {
   const [count, setCount] = useState(0);
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [imgUrl, setImgUrl] = useState('');
-  const [imdbUrl, setImdbUrl] = useState('');
-  const [imdbId, setImdbId] = useState('');
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    imgUrl: '',
+    imdbUrl: '',
+    imdbId: '',
+  });
 
   const reset = () => {
-    setTitle('');
-    setDescription('');
-    setImgUrl('');
-    setImdbUrl('');
-    setImdbId('');
+    setFormData({
+      title: '',
+      description: '',
+      imgUrl: '',
+      imdbUrl: '',
+      imdbId: '',
+    });
   };
 
-  const notReadyToSubmit = !title || !imgUrl || !imdbUrl || !imdbId;
+  const notReadyToSubmit =
+    !formData.title ||
+    !formData.imgUrl ||
+    !formData.imdbUrl ||
+    !formData.imdbId;
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    name: Naming,
+  ) => {
+    const { value } = event.target;
+
+    setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,11 +58,11 @@ export const NewMovie: React.FC<PropsNewMovie> = ({ onAdd }) => {
     }
 
     onAdd({
-      title,
-      description,
-      imgUrl,
-      imdbUrl,
-      imdbId,
+      title: formData.title,
+      description: formData.description,
+      imgUrl: formData.imgUrl,
+      imdbUrl: formData.imdbUrl,
+      imdbId: formData.imdbId,
     });
 
     setCount(currentCount => currentCount + 1);
@@ -50,41 +75,41 @@ export const NewMovie: React.FC<PropsNewMovie> = ({ onAdd }) => {
       <h2 className="title">Add a movie</h2>
 
       <TextField
-        name="title"
+        name={Naming.title}
         label="Title"
-        value={title}
-        onChange={setTitle}
+        value={formData.title}
+        onChange={event => handleChange(event, Naming.title)}
         required
       />
 
       <TextField
-        name="description"
+        name={Naming.description}
         label="Description"
-        value={description}
-        onChange={setDescription}
+        value={formData.description}
+        onChange={event => handleChange(event, Naming.description)}
       />
 
       <TextField
-        name="imgUrl"
+        name={Naming.imgUrl}
         label="Image URL"
-        value={imgUrl}
-        onChange={setImgUrl}
+        value={formData.imgUrl}
+        onChange={event => handleChange(event, Naming.imgUrl)}
         required
       />
 
       <TextField
-        name="imdbUrl"
+        name={Naming.imdbUrl}
         label="Imdb URL"
-        value={imdbUrl}
-        onChange={setImdbUrl}
+        value={formData.imdbUrl}
+        onChange={event => handleChange(event, Naming.imdbUrl)}
         required
       />
 
       <TextField
-        name="imdbId"
+        name={Naming.imdbId}
         label="Imdb ID"
-        value={imdbId}
-        onChange={setImdbId}
+        value={formData.imdbId}
+        onChange={event => handleChange(event, Naming.imdbId)}
         required
       />
 
